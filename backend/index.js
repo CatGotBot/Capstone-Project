@@ -34,14 +34,35 @@ const authenticateToken = (req, res, next) => {
 };
  
   //registeration route
-  app.post('/api/register', async(req, res, next)
-try {
-    const userExists = await client.query('SELECT * FROM users WHERE username = $1', [req.body.username]);
-    if (userExists.rows.length > 0) {
-        return res.status(400).json({error: 'Username exists, try another one!'})
+  app.post('/api/register', async(req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      const result = await client.query(`
+        WITH existing AS (
+          SELECT username FROM users WHERE username = $1
+        )
+        INSERT INTO users(username, password)
+        SELECT $1, $2
+        WHERE NOT EXISTS (SELECT 1 FROM existing)
+        RETURNING id, username
+      `, [username, await bcrypt.hash(password, 10)]);
+      
+      if (result.rows.length === 0) {
+        return res.status(400).json({ error: 'Username exists!' });
+      }
+      
+      const token = jwt.sign({ id: result.rows[0].id }, JWT_SECRET, { expiresIn: '1h' });
+      return res.status(201).json({ 
+        message: 'User created, proceed!', 
+        user: result.rows[0], 
+        token 
+      });
+      
+    } catch (err) {
+      return res.status(500).json({ error: 'Server error' });
     }
-}
-)
+  });
 
 
 
