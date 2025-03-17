@@ -2,18 +2,49 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const pg = require('pg');
+
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:kseniya3@localhost/acme_skiresorts_db');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'set_up_jwt_secret_key_after';
 
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../client/dist")));
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"))
+);
+ 
+
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) return res.status(401).json({ error: 'Access denied' });
+  
+    try {
+      const verified = jwt.verify(token, JWT_SECRET);
+      req.user = verified;
+      next();
+    } catch (error) {
+      res.status(400).json({ error: 'Invalid token' });
+    }
+  };
+
 
 app.get('/api/resorts', async(req, res, next)=> {
+
+    console.log ('get resorts')
+
   try {
     const SQL = `
-      SELECT * from resorts ORDER BY created_at DESC;
+      SELECT * from resorts;
     `;
     const response = await client.query(SQL);
+
+    console.log (response)
+
     res.send(response.rows);
   }
   catch(ex){
@@ -37,19 +68,20 @@ app.get('/api/resorts/:id', async(req, res, next)=> {
 });
 
 app.put('/api/resorts/:id', async(req, res, next)=> {
-  try {
-    const SQL = `
-      UPDATE resorts
-      SET name=$1, is_favorite=$2, updated_at= now()
-      WHERE id=$3 RETURNING *
-    `;
-    const response = await client.query(SQL, [ req.body.name, req.body.is_favorite, req.params.id]);
-    res.send(response.rows[0]);
-  }
-  catch(ex){
-    next(ex);
-  }
-});
+    try {
+      const SQL = `
+        UPDATE resorts
+        SET name=$1, location=$2, hours=$3
+        WHERE id=$4 RETURNING *
+      `;
+      const response = await client.query(SQL, [ req.body.name, req.body.location, req.body.hours, req.params.id]);
+      res.send(response.rows[0]);
+    }
+    catch(ex){
+      next(ex);
+    }
+  });
+  
 
 app.delete('/api/resorts/:id', async(req, res, next)=> {
   try {
@@ -66,19 +98,20 @@ app.delete('/api/resorts/:id', async(req, res, next)=> {
 });
 
 app.post('/api/resorts', async(req, res, next)=> {
-  try {
-    const SQL = `
-      INSERT INTO resorts(name, is_favorite)
-      VALUES($1, $2)
-      RETURNING *
-    `;
-    const response = await client.query(SQL, [ req.body.name, req.body.is_favorite]);
-    res.send(response.rows[0]);
-  }
-  catch(ex){
-    next(ex);
-  }
-});
+    try {
+      const SQL = `
+        INSERT INTO resorts(name, location, hours)
+        VALUES($1, $2, $3)
+        RETURNING *
+      `;
+      const response = await client.query(SQL, [ req.body.name, req.body.location, req.body.hours ]);
+      res.send(response.rows[0]);
+    }
+    catch(ex){
+      next(ex);
+    }
+  });
+  
 
 
 
