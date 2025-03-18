@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 
+
+// Import components
+import Navigation from './components/Navigations.jsx';
+import Resorts from './components/Resorts.jsx'
+import SingleResort from './components/SingleResort.jsx'
+import Login from './components/Login.jsx'
+import Register from './components/Register.jsx'
+import Account from './components/Account.jsx'
+
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [token, setToken] = useState(localStorage.getItem('token'));
+ 
+  // Handle token changes
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem('token', token);
+    }
+  }, [token]);
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="app-container">
+        <Navigation token={token} setToken={setToken} />
+        <main className="content">
+          <Routes>
+            <Route path="/" element={
+              <div className="home-page">
+                <h1>Welcome to list of midwest Ski Resorts!</h1>
+                <p>Here's the list of ski resorts that you can review or log in to interact with them.</p>
+              </div>
+            } />
+            <Route path="/resorts" element={<Resorts />} />
+            <Route path="/resorts/:id" element={<SingleResort token={token} />} />
+            <Route path="/login" element={<Login setToken={setToken} />} />
+            <Route path="/register" element={<Register setToken={setToken} />} />
+            <Route path="/account" element={<Account token={token} setToken={setToken} />} />
+          </Routes>
+        </main>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </Router>
   )
 }
+
 
 export default App
