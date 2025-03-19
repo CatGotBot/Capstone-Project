@@ -26,7 +26,7 @@ function Account({ token, setToken }) {
         setUser(userData);
       } catch (error) {
         console.error(error.message);
-        // If token is invalid, log the user out
+        // If token is invalid, kick user out
         handleLogout();
       }
     }

@@ -1,3 +1,4 @@
+// Import neccesart modules for code to woek like express for server or reacR for frontend, pg is for library, apth is for Node.js bild in path module
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -5,19 +6,23 @@ const pg = require('pg');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+// database in Postgres
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:kseniya3@localhost/acme_skiresorts_db');
 
-// JWT secret key, change key in ''
-const JWT_SECRET = process.env.JWT_SECRET || 'set_up_jwt_secret_key_after';
+// JWT secret key, change key in ''???
+const JWT_SECRET = process.env.JWT_SECRET || '9737547d971cfbd9b3507c50be50a28a5c5e5a8f21622ea2aff5d256539b5d6c8ebeb5ae8020041da27f34e7ce2975c69f7aa192593f1d0f63e6cdad7668bf08';
 
-
+// Helps server read JSON and send website files
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// Sends homepage to users
 app.get("/", (req, res) =>
     res.sendFile(path.join(__dirname, "../client/dist/index.html"))
 );
 
-//authentification middleware
+//authentification middleware 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -74,15 +79,17 @@ app.post('/api/login', async (req, res, next) => {
             return res.status(400).json({ error: 'Incorrect username or password' });
         }
 
+        // verify password by using bcrypt 
         const validPassword = await bcrypt.compare(req.body.password, response.rows[0].password);
         if (!validPassword) {
             return res.status(400).json({ error: 'Incorrect username or password' });
         }
 
+        // creating JWT token, to identify user
         const token = jwt.sign({ id: response.rows[0].id }, JWT_SECRET, { expiresIn: '1h' });
 
         res.json({
-            message: 'Youre in!',
+            message: 'Youre in, enjoy!',
             user: {
                 id: response.rows[0].id,
                 username: response.rows[0].username
@@ -94,7 +101,7 @@ app.post('/api/login', async (req, res, next) => {
     }
 });
 
-//   current user route
+//   current user route, fetch user's info
 app.get('/api/me', authenticateToken, async (req, res, next) => {
     try {
         const SQL = `SELECT id, username FROM users WHERE id = $1`;
@@ -110,6 +117,7 @@ app.get('/api/me', authenticateToken, async (req, res, next) => {
     }
 });
 
+// CRUD routes for resorts(pathes of how where to Create, Read, Update, Delete data for resorts)
 app.get('/api/resorts', async (req, res, next) => {
 
     console.log('get resorts')
@@ -189,9 +197,7 @@ app.post('/api/resorts', async (req, res, next) => {
     }
 });
 
-
-
-
+// setup database + server
 const init = async () => {
     await client.connect();
     console.log('connected to database');
@@ -213,6 +219,7 @@ const init = async () => {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `;
+    // create table and pull their info (seed info?)
     await client.query(SQL);
     console.log('tables created');
     SQL = `
