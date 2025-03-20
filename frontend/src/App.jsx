@@ -1,27 +1,25 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import './App.css'
-
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
 
 // Import components
 import Navigation from './components/Navigations.jsx';
-import Resorts from './components/Resorts.jsx'
-import SingleResort from './components/SingleResort.jsx'
-import Login from './components/Login.jsx'
-import Register from './components/Register.jsx'
-import Account from './components/Account.jsx'
-
+import Resorts from './components/Resorts.jsx';
+import SingleResort from './components/SingleResort.jsx';
+import Login from './components/Login.jsx';
+import Register from './components/Register.jsx';
+import Account from './components/Account.jsx';
+import NewResort from './components/NewResort.jsx';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
- 
+
   // Handle token changes
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
     }
   }, [token]);
-
 
   return (
     <Router>
@@ -35,7 +33,8 @@ function App() {
                 <p>Here's the list of ski resorts that you can review or log in to interact with them.</p>
               </div>
             } />
-            <Route path="/resorts" element={<Resorts />} />
+            <Route path="/resorts" element={<Resorts token={token} />} />
+            <Route path="/resorts/new" element={<NewResort token={token} />} /> {/* <-- New route */}
             <Route path="/resorts/:id" element={<SingleResort token={token} />} />
             <Route path="/login" element={<Login setToken={setToken} />} />
             <Route path="/register" element={<Register setToken={setToken} />} />
@@ -44,8 +43,8 @@ function App() {
         </main>
       </div>
     </Router>
-  )
+  );
 }
 
+export default App;
 
-export default App

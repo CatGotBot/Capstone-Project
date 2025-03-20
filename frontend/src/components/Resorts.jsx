@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-export default function Resorts() {
+export default function Resorts({ token }) {
   const [resorts, setResorts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,20 +11,35 @@ export default function Resorts() {
     async function getResorts() {
       try {
         const response = await fetch('/api/resorts');
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-
         const result = await response.json();
         setResorts(result);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching resorts:", error.message);
+        console.error("Error fetching resorts:", error);
         setLoading(false);
       }
     }
     getResorts();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this resort?")) return;
+
+    try {
+      const response = await fetch(`/api/resorts/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (!response.ok) throw new Error('Failed to delete resort');
+
+      setResorts(resorts.filter(r => r.id !== id));
+      alert("Resort deleted!");
+    } catch (error) {
+      console.error("Error deleting resort:", error);
+      alert("Unable to delete resort.");
+    }
+  };
 
   const filteredResorts = resorts.filter(resort =>
     resort.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -35,30 +50,32 @@ export default function Resorts() {
     <div className="resorts-container">
       <h1>Ski Resorts</h1>
 
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search by name or location..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-      </div>
+      {token && <button onClick={() => navigate('/resorts/new')}>Add New Resort</button>}
+
+      <input
+        type="text"
+        placeholder="Search by name or location..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
 
       {loading ? (
         <p>Loading resorts...</p>
       ) : (
         <ul className="resorts-list">
-          {filteredResorts.length > 0 ? (
-            filteredResorts.map((resort) => (
-              <li 
-                key={resort.id} 
-                onClick={() => navigate(`/resorts/${resort.id}`)}
-                className="resort-item"
-              >
+          {filteredResorts.length ? (
+            filteredResorts.map(resort => (
+              <li key={resort.id}>
                 <h3>{resort.name}</h3>
-                <p>Location: {resort.location}</p>
-                <p>Hours: {resort.hours}</p>
+                <p>{resort.location} | {resort.hours}</p>
+
+                {token && (
+                  <div className="actions">
+                    <button onClick={() => navigate(`/resorts/${resort.id}`)}>View/Edit</button>
+                    <button onClick={() => handleDelete(resort.id)}>Delete</button>
+                  </div>
+                )}
               </li>
             ))
           ) : (
