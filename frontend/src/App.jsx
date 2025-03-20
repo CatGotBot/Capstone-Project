@@ -29,12 +29,13 @@ function App() {
           <Routes>
             <Route path="/" element={
               <div className="home-page">
-                <h1>Welcome to list of midwest Ski Resorts!</h1>
-                <p>Here's the list of ski resorts that you can review or log in to interact with them.</p>
+                <h1>Welcome to Midwest Ski Resorts!</h1>
+                <p>This website was created for ski/snowboard people alike, here you can find different resorts that people recommend the most!</p>
+                <p>Log in or register to explore ski resort details about resorts and contribute more to our community!</p>
               </div>
             } />
             <Route path="/resorts" element={<Resorts token={token} />} />
-            <Route path="/resorts/new" element={<NewResort token={token} />} /> {/* <-- New route */}
+            <Route path="/resorts/new" element={<NewResort token={token} />} />
             <Route path="/resorts/:id" element={<SingleResort token={token} />} />
             <Route path="/login" element={<Login setToken={setToken} />} />
             <Route path="/register" element={<Register setToken={setToken} />} />
@@ -47,4 +48,3 @@ function App() {
 }
 
 export default App;
-

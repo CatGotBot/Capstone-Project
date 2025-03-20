@@ -36,7 +36,7 @@ export default function NewResort({ token }) {
 
   return (
     <div className="new-resort-container">
-      <h2>Add a New Ski Resort</h2>
+      <h2>Add New Ski Resort</h2>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleCreateResort} className="resort-form">
         <div className="form-group">

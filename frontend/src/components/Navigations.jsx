@@ -27,7 +27,7 @@ function Navigation({ token, setToken }) {
                 <h1 className="logo">Ski Resorts</h1>
                 <ul className="nav-links">
                     <li><Link to="/">Home</Link></li>
-                    <li><Link to="/resorts">Browse Resorts</Link></li>
+                    <li><Link to="/resorts">All Resorts</Link></li>
                     <li><Link to="/account">My Account</Link></li>
                     <li><button className="logout-button" onClick={handleLogout}>Logout</button></li>
                 </ul>

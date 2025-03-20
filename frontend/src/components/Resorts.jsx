@@ -50,7 +50,7 @@ export default function Resorts({ token }) {
     <div className="resorts-container">
       <h1>Ski Resorts</h1>
 
-      {token && <button onClick={() => navigate('/resorts/new')}>Add New Resort</button>}
+      {token && <button onClick={() => navigate('/resorts/new')}>Add Resort</button>}
 
       <input
         type="text"
@@ -72,7 +72,7 @@ export default function Resorts({ token }) {
 
                 {token && (
                   <div className="actions">
-                    <button onClick={() => navigate(`/resorts/${resort.id}`)}>View/Edit</button>
+                    <button onClick={() => navigate(`/resorts/${resort.id}`)}>Edit</button>
                     <button onClick={() => handleDelete(resort.id)}>Delete</button>
                   </div>
                 )}

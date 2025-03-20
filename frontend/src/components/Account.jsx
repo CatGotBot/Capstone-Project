@@ -137,7 +137,7 @@ function Account({ token, setToken }) {
   return (
     <div className="account-container">
       <h2>Welcome, {user.username}!</h2>
-      <p>You're successfully logged in.</p>
+      <p>You're in!</p>
       
       <div className="user-info">
         <h3>Your Account Details</h3>
@@ -147,7 +147,7 @@ function Account({ token, setToken }) {
       
       <div className="resorts-section">
         <h3>Ski Resorts</h3>
-        <p>View available ski resorts or manage them if you have admin privileges.</p>
+        <p>View available details about ski resorts and edit them.</p>
         <button onClick={() => navigate("/resorts")}>View Resorts</button>
       </div>
       
