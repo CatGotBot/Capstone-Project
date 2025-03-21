@@ -1,9 +1,14 @@
 /* Global Reset */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
+  background: #4c6598;
+  color: rgb(255, 255, 255);
+  border-color: #4c1045;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  margin-bottom: 20px;
 }
 
 /* Body Styles */
@@ -16,6 +21,7 @@ body {
   justify-content: flex-start;
   min-height: 100vh;
   padding: 20px;
+  text-align: center;
 }
 
 /* Header */
@@ -24,8 +30,8 @@ header {
   background: #1b3b6f;
   color: white;
   text-align: center;
-  padding: 20px;
-  font-size: 2rem;
+  padding: 30px;
+  font-size: 3rem;
   font-weight: bold;
 }
 
@@ -65,7 +71,10 @@ nav ul li a:hover {
 .resorts-container {
   width: 90%;
   max-width: 1000px;
-  margin-top: 30px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .resorts-container ul {
@@ -73,6 +82,7 @@ nav ul li a:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .resorts-container li {
@@ -82,6 +92,7 @@ nav ul li a:hover {
   box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
+  text-align: center;
 }
 
 .resorts-container li:hover {
@@ -99,16 +110,21 @@ nav ul li a:hover {
   margin-top: 30px;
 }
 
+/* list name */
+.resorts-container h1 {
+font-size: 35px;}
+
 /* Buttons */
 button {
-  background: #5777aa;
-  color: white;
-  border: none;
-  padding: 1px 15px;
+  background: #3a5da4;
+  color: rgb(255, 255, 255);
+  border-color: #4c1045;
+  padding: 10px 20px;
   border-radius: 6px;
   font-size: 1.1rem;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
+  margin-bottom: 20px;
 }
 
 button:hover {
@@ -126,6 +142,7 @@ button:disabled {
   max-width: 450px;
   padding: 14px;
   margin-top: 30px;
+  margin-bottom: 40px;
   border: 2px solid #3a5da4;
   border-radius: 6px;
   font-size: 1.1rem;

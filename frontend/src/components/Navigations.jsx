@@ -12,7 +12,7 @@ function Navigation({ token, setToken }) {
     if (!token) {
         return (
             <nav className="main-navigation">
-                <h1 className="logo">Ski Resorts</h1>
+                <h1 className="logo">Find Your SKI Adventure Here!</h1>
                 <ul className="nav-links">
                     <li><Link to="/">Home</Link></li>
                     <li><Link to="/resorts">Browse Resorts</Link></li>
@@ -24,7 +24,7 @@ function Navigation({ token, setToken }) {
     } else {
         return (
             <nav className="main-navigation">
-                <h1 className="logo">Ski Resorts</h1>
+                <h1 className="logo">Explore Your Adeventure!</h1>
                 <ul className="nav-links">
                     <li><Link to="/">Home</Link></li>
                     <li><Link to="/resorts">All Resorts</Link></li>
